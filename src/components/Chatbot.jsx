@@ -31,7 +31,7 @@ export default function Chatbot() {
       {/* Chat Icon */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700"
+        className="cursor-pointer fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700"
       >
         <MessageCircle className="w-6 h-6" />
       </button>
@@ -66,7 +66,7 @@ export default function Chatbot() {
   />
   <button
     onClick={handleSend}
-    className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-xl flex items-center justify-center"
+    className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-xl flex items-center justify-center"
   >
     <Send className="w-5 h-5" />
   </button>

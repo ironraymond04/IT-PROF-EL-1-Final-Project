@@ -183,15 +183,29 @@ function StudentPanel() {
 
 function GuestPanel() {
   return (
-    <div className="text-center bg-gray-100 p-6 rounded-xl border shadow-sm">
-      <p className="text-gray-700 mb-3">
-        You are currently a guest. Please log in to access more features.
+    <div className="bg-white border rounded-xl shadow p-6 text-center">
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">
+        👋 Welcome, Guest User
+      </h2>
+
+      <p className="text-gray-600 mb-4">
+        You currently have guest access. You can browse public events, but some
+        features are limited.
       </p>
+
+      <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
+        <p className="text-blue-700 text-sm">
+          Want to participate in events or access more tools?  
+          You may request a role upgrade to <strong>Student</strong> or
+          <strong>Teacher</strong> from the admin.
+        </p>
+      </div>
+
       <a
-        href="/login"
+        href="/events"
         className="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
       >
-        Login Now
+        View Public Events
       </a>
     </div>
   );

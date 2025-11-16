@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import supabase from "../lib/supabase";
+import bg from "../assets/bg.png"; 
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,8 +18,16 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-blue-50">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm border">
+    <div
+      className="flex justify-center items-center h-screen"
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-xl p-8 w-full max-w-sm border">
         <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">Login</h1>
 
         <input
@@ -38,7 +47,7 @@ export default function Login() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="cursor-pointer w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
         >
           {loading ? "Logging in..." : "Login"}
         </button>

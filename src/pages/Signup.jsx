@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import supabase from "../lib/supabase";
+import bg from "../assets/bg.png";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -11,9 +12,14 @@ export default function Signup() {
   const handleSignup = async () => {
     setLoading(true);
 
-    // 1. Create user in auth.users
     const { data: authData, error: authError } =
-      await supabase.auth.signUp({ email, password });
+      await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          data: { role }
+        }
+      });
 
     if (authError) {
       setLoading(false);
@@ -22,12 +28,11 @@ export default function Signup() {
 
     const userId = authData.user.id;
 
-    // 2. Insert into public.users table
     const { error: profileError } = await supabase.from("users").insert([
       {
         id: userId,
-        email: email,
-        role: role,
+        email,
+        role,
       },
     ]);
 
@@ -42,8 +47,16 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-blue-50">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm border">
+    <div
+      className="flex justify-center items-center h-screen"
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-xl p-8 w-full max-w-sm border">
         <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">
           Create an Account
         </h1>
@@ -62,7 +75,6 @@ export default function Signup() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* ROLE DROPDOWN */}
         <select
           className="w-full border px-3 py-2 rounded mb-4"
           value={role}
@@ -84,7 +96,7 @@ export default function Signup() {
 
         <p className="mt-4 text-sm text-gray-600 text-center">
           Already have an account?{" "}
-          <Link to="/login" className="cursor-pointer text-blue-600 font-semibold hover:underline">
+          <Link to="/login" className="text-blue-600 font-semibold hover:underline">
             Login
           </Link>
         </p>
