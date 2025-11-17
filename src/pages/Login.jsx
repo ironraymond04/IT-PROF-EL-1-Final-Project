@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import supabase from "../lib/supabase";
 import bg from "../assets/bg.png"; 
 
@@ -8,13 +8,25 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+  const navigate = useNavigate();
 
-    if (error) alert(error.message);
-    else window.location.href = "/dashboard";
+  const handleLogin = async () => {
+  setLoading(true);
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert("Login failed: " + error.message);
+    setLoading(false);
+    return;
+  }
+
+  alert("Login successful!");
+  setLoading(false);
+  navigate("/dashboard");
   };
 
   return (

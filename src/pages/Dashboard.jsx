@@ -11,7 +11,6 @@ export default function Dashboard() {
   useEffect(() => {
     loadUser();
 
-    // Listen for login/logout events → refresh dashboard UI
     const { data: listener } = supabase.auth.onAuthStateChange(() => {
       loadUser();
     });
@@ -37,11 +36,10 @@ export default function Dashboard() {
 
       if (error) console.log(error);
 
-      // Correct role assignment logic
       if (profile?.role) {
         setRole(profile.role);
       } else {
-        setRole("student"); // Default role for newly logged-in users
+        setRole("student"); 
       }
     } else {
       setRole("guest");
@@ -126,56 +124,73 @@ export default function Dashboard() {
 /* -------------------- ROLE PANELS -------------------- */
 
 function AdminPanel() {
+  const goToManageEvents = () => window.location.href = "/admin/manage-events";
+  const goToUserAccounts = () => window.location.href = "/admin/user-accounts";
+  const goToAnalytics = () => window.location.href = "/admin/analytics";
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card
         icon={<CalendarDays className="w-6 h-6 text-blue-600" />}
         title="Manage Events"
         desc="Create, approve, or delete school events."
+        onClick={goToManageEvents}
       />
       <Card
         icon={<Users className="w-6 h-6 text-green-600" />}
         title="User Accounts"
         desc="Manage teachers, students, and guest access."
+        onClick={goToUserAccounts}
       />
       <Card
         icon={<BarChart3 className="w-6 h-6 text-purple-600" />}
         title="Analytics"
         desc="View reports and participation statistics."
+        onClick={goToAnalytics}
       />
     </div>
   );
 }
 
 function TeacherPanel() {
+  const goToMyEvents = () => window.location.href = "/teacher/my-events";
+  const goToReminders = () => window.location.href = "/teacher/reminders";
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card
         icon={<CalendarDays className="w-6 h-6 text-blue-600" />}
         title="My Events"
         desc="View and manage your department’s events."
+        onClick={goToMyEvents}
       />
       <Card
         icon={<Settings className="w-6 h-6 text-yellow-600" />}
         title="Reminders"
         desc="Set reminders or announcements for your classes."
+        onClick={goToReminders}
       />
     </div>
   );
 }
 
 function StudentPanel() {
+  const goToRegistered = () => window.location.href = "/student/registered-events";
+  const goToJoin = () => window.location.href = "/student/join-events";
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card
         icon={<CalendarDays className="w-6 h-6 text-blue-600" />}
         title="Registered Events"
         desc="See events you’ve signed up for."
+        onClick={goToRegistered}
       />
       <Card
         icon={<Users className="w-6 h-6 text-green-600" />}
         title="Join Events"
         desc="Discover and register for upcoming activities."
+        onClick={goToJoin}
       />
     </div>
   );
@@ -213,9 +228,12 @@ function GuestPanel() {
 
 /* -------------------- CARD COMPONENT -------------------- */
 
-function Card({ icon, title, desc }) {
+function Card({ icon, title, desc, onClick }) {
   return (
-    <div className="bg-white border rounded-xl shadow p-4 hover:shadow-md transition">
+    <div
+      className="bg-white border rounded-xl shadow p-4 hover:shadow-md transition cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex items-center space-x-3 mb-2">
         {icon}
         <h3 className="font-semibold text-gray-800">{title}</h3>

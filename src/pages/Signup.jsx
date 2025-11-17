@@ -12,38 +12,22 @@ export default function Signup() {
   const handleSignup = async () => {
     setLoading(true);
 
-    const { data: authData, error: authError } =
-      await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          data: { role }
-        }
-      });
-
-    if (authError) {
-      setLoading(false);
-      return alert(authError.message);
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { role }  
     }
+  });
 
-    const userId = authData.user.id;
-
-    const { error: profileError } = await supabase.from("users").insert([
-      {
-        id: userId,
-        email,
-        role,
-      },
-    ]);
-
+  if (error) {
+    alert("Signup failed: " + error.message);
     setLoading(false);
+    return;
+  }
 
-    if (profileError) {
-      alert(profileError.message);
-    } else {
-      alert("Signup successful! You can now log in.");
-      window.location.href = "/login";
-    }
+  alert("Signup successful! Check your email for verification.");
+  setLoading(false);
   };
 
   return (

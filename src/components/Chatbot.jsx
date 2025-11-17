@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { MessageCircle, Send } from "lucide-react";
 import { sendGeminiMessage } from "../lib/gemini";
-import { events } from "../pages/Events"; // import events
+import Events from "../pages/Events";
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function Chatbot() {
     setInput("");
 
     // Pass events array to Gemini
-    const response = await sendGeminiMessage(messages, input, events);
+    const response = await sendGeminiMessage(messages, input, Events);
 
     setMessages((prev) => [...prev, { role: "assistant", content: response }]);
   };
