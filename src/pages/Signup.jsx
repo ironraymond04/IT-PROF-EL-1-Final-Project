@@ -41,7 +41,7 @@ export default function Signup() {
       }}
     >
       <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-xl p-8 w-full max-w-sm border">
-        <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">
+        <h1 className="text-2xl font-bold text-red-600 mb-6 text-center">
           Create an Account
         </h1>
 
@@ -73,14 +73,14 @@ export default function Signup() {
         <button
           onClick={handleSignup}
           disabled={loading}
-          className="cursor-pointer w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="cursor-pointer w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
         >
           {loading ? "Creating account..." : "Sign Up"}
         </button>
 
         <p className="mt-4 text-sm text-gray-600 text-center">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+          <Link to="/login" className="text-red-600 font-semibold hover:underline">
             Login
           </Link>
         </p>

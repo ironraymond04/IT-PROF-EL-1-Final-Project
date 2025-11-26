@@ -40,7 +40,7 @@ export default function Login() {
       }}
     >
       <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-xl p-8 w-full max-w-sm border">
-        <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold text-red-600 mb-6 text-center">Login</h1>
 
         <input
           type="email"
@@ -59,14 +59,14 @@ export default function Login() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="cursor-pointer w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="cursor-pointer w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
 
         <p className="mt-4 text-sm text-gray-600 text-center">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-600 font-semibold hover:underline">
+          <Link to="/signup" className="text-red-600 font-semibold hover:underline">
             Sign Up
           </Link>
         </p>

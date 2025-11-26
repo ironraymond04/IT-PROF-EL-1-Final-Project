@@ -31,7 +31,7 @@ export default function Chatbot() {
       {/* Chat Icon */}
       <button
         onClick={() => setOpen(!open)}
-        className="cursor-pointer fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700"
+        className="cursor-pointer fixed bottom-6 right-6 bg-red-600 text-white p-3 rounded-full shadow-lg hover:bg-red-700"
       >
         <MessageCircle className="w-6 h-6" />
       </button>
@@ -39,7 +39,7 @@ export default function Chatbot() {
       {/* Chat Window */}
       {open && (
         <div className="fixed bottom-20 right-6 w-80 bg-white rounded-2xl shadow-lg border border-gray-200 flex flex-col">
-          <div className="p-3 bg-blue-600 text-white font-semibold rounded-t-2xl">
+          <div className="p-3 bg-red-600 text-white font-semibold rounded-t-2xl">
             Gemini Event Assistant
           </div>
           <div className="p-3 flex-1 overflow-y-auto space-y-2 max-h-80">
@@ -48,7 +48,7 @@ export default function Chatbot() {
                 key={i}
                 className={`p-2 rounded-xl ${
                   m.role === "assistant"
-                    ? "bg-blue-100 text-gray-800 self-start"
+                    ? "bg-red-100 text-gray-800 self-start"
                     : "bg-gray-200 text-gray-900 self-end"
                 }`}
               >
@@ -62,11 +62,11 @@ export default function Chatbot() {
     value={input}
     onChange={(e) => setInput(e.target.value)}
     placeholder="Ask something..."
-    className="flex-1 border border-gray-300 rounded-l-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+    className="flex-1 border border-gray-300 rounded-l-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
   />
   <button
     onClick={handleSend}
-    className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-xl flex items-center justify-center"
+    className="cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 rounded-r-xl flex items-center justify-center"
   >
     <Send className="w-5 h-5" />
   </button>
