@@ -61,8 +61,8 @@ export default function Dashboard() {
       {/* Top */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-3xl font-bold text-blue-600">
-            {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard
+          <h1 className="text-3xl font-bold text-black-600">
+           Dashboard
           </h1>
           <RoleBadge role={role} />
         </div>
@@ -87,7 +87,7 @@ export default function Dashboard() {
 
       {/* Gemini Tips */}
       <div className="mt-10 p-5 bg-blue-50 border border-blue-100 rounded-xl shadow-sm">
-        <h2 className="text-lg font-semibold text-blue-700 mb-2">
+        <h2 className="text-lg font-semibold text-red-700 mb-2">
           💡 Gemini Assistant Tip
         </h2>
         <ul className="list-disc list-inside text-gray-600 mt-2">
@@ -209,7 +209,7 @@ function GuestPanel() {
       </p>
 
       <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
-        <p className="text-blue-700 text-sm">
+        <p className="text-black-700 text-sm">
           Want to participate in events or access more tools?  
           You may request a role upgrade to <strong>Student</strong> or
           <strong>Teacher</strong> from the admin.
@@ -218,7 +218,7 @@ function GuestPanel() {
 
       <a
         href="/events"
-        className="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
+        className="inline-block bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition"
       >
         View Public Events
       </a>
