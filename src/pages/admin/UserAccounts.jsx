@@ -25,23 +25,23 @@ export default function UserAccounts() {
 
   if (loading) return <p>Loading users...</p>;
 
-  return (
+return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-4">User Accounts</h1>
-      <table className="table-auto border-collapse border w-full">
+      <table className="table-auto border-collapse border border-black w-full bg-white">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border px-2 py-1">Email</th>
-            <th className="border px-2 py-1">Role</th>
-            <th className="border px-2 py-1">Action</th>
+          <tr className="bg-white">
+            <th className="border border-black px-2 py-1">Email</th>
+            <th className="border border-black px-2 py-1">Role</th>
+            <th className="border border-black px-2 py-1">Action</th>
           </tr>
         </thead>
         <tbody>
           {users.map(u => (
-            <tr key={u.id}>
-              <td className="border px-2 py-1">{u.email}</td>
-              <td className="border px-2 py-1">{u.role}</td>
-              <td className="border px-2 py-1">
+            <tr key={u.id} className="bg-white">
+              <td className="border border-black px-2 py-1">{u.email}</td>
+              <td className="border border-black px-2 py-1">{u.role}</td>
+              <td className="border border-black px-2 py-1">
                 <button onClick={() => deleteUser(u.id)} className="cursor-pointer bg-red-500 text-white px-2 py-1 rounded">Delete</button>
               </td>
             </tr>

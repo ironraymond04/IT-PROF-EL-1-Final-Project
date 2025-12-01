@@ -50,12 +50,12 @@ export default function Navbar() {
   }, []);
 
 // Fetch reminders for students
-async function fetchReminders(userId) {
+async function fetchReminders(user_id) {
   try {
     const { data, error } = await supabase
       .from("reminders")
-      .select("id, title, note, remind_at")  // ← Added 'id' here
-      .eq("user_id", userId)                 // ← Added user filter
+      .select("id, title, note, remind_at") 
+      .eq("user_id", user_id)                 
       .gte("remind_at", new Date().toISOString())
       .order("remind_at", { ascending: true });
 
@@ -121,7 +121,7 @@ async function fetchReminders(userId) {
               <div className="relative">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative text-white hover:text-gray-300 transition p-2"
+                  className="cursor-pointer relative text-white hover:text-gray-300 transition p-2"
                   aria-label="Notifications"
                 >
                   <Bell size={24} />

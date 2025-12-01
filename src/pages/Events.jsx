@@ -29,7 +29,7 @@ export default function Events() {
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-semibold mb-4 text-blue-600">Upcoming Events</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-black">Upcoming Events</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {events.map((event) => (
           <div

@@ -5,6 +5,7 @@ export default function Reminders() {
   const [reminders, setReminders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     note: "",
@@ -30,10 +31,31 @@ export default function Reminders() {
   }
 
   function handleAddReminder() {
+    setEditingId(null);
+    setFormData({ title: "", note: "", remind_at: "" });
     setShowModal(true);
   }
 
-  async function HandleDeleteReminder(reminderId) {
+  function handleEditReminder(reminder) {
+    setEditingId(reminder.id);
+    // Convert UTC to local datetime-local format
+    const localDate = new Date(reminder.remind_at);
+    const year = localDate.getFullYear();
+    const month = String(localDate.getMonth() + 1).padStart(2, '0');
+    const day = String(localDate.getDate()).padStart(2, '0');
+    const hours = String(localDate.getHours()).padStart(2, '0');
+    const minutes = String(localDate.getMinutes()).padStart(2, '0');
+    const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    
+    setFormData({
+      title: reminder.title,
+      note: reminder.note || "",
+      remind_at: formattedDateTime
+    });
+    setShowModal(true);
+  }
+
+  async function handleDeleteReminder(reminderId) {
     try {
       const { error } = await supabase
         .from('reminders')
@@ -46,7 +68,6 @@ export default function Reminders() {
       }
 
       console.log('Reminder deleted successfully');
-      // Refresh the reminders list after deletion
       fetchReminders();
       return { success: true };
     } catch (err) {
@@ -57,6 +78,7 @@ export default function Reminders() {
 
   function handleCloseModal() {
     setShowModal(false);
+    setEditingId(null);
     setFormData({ title: "", note: "", remind_at: "" });
   }
 
@@ -75,26 +97,48 @@ export default function Reminders() {
     const localDate = new Date(formData.remind_at);
     const utcDate = localDate.toISOString();
     
-    const { data, error } = await supabase
-      .from("reminders")
-      .insert([
-        {
-          user_id: userData.user.id,
+    if (editingId) {
+      // Update existing reminder
+      const { data, error } = await supabase
+        .from("reminders")
+        .update({
           title: formData.title,
           note: formData.note,
           remind_at: utcDate
-        }
-      ])
-      .select();
+        })
+        .eq('id', editingId)
+        .select();
 
-    if (error) {
-      console.error("Error adding reminder:", error);
-      alert("Failed to add reminder");
+      if (error) {
+        console.error("Error updating reminder:", error);
+        alert("Failed to update reminder");
+      } else {
+        fetchReminders();
+        handleCloseModal();
+      }
     } else {
-      setReminders(prev => [...prev, ...data].sort((a, b) => 
-        new Date(a.remind_at) - new Date(b.remind_at)
-      ));
-      handleCloseModal();
+      // Insert new reminder
+      const { data, error } = await supabase
+        .from("reminders")
+        .insert([
+          {
+            user_id: userData.user.id,
+            title: formData.title,
+            note: formData.note,
+            remind_at: utcDate
+          }
+        ])
+        .select();
+
+      if (error) {
+        console.error("Error adding reminder:", error);
+        alert("Failed to add reminder");
+      } else {
+        setReminders(prev => [...prev, ...data].sort((a, b) => 
+          new Date(a.remind_at) - new Date(b.remind_at)
+        ));
+        handleCloseModal();
+      }
     }
     
     setSubmitting(false);
@@ -176,10 +220,16 @@ export default function Reminders() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="cursor-pointer text-black mr-3">
+                    <button 
+                      className="cursor-pointer text-black hover:text-gray-700 mr-3"
+                      onClick={() => handleEditReminder(reminder)}
+                    >
                       Edit
                     </button>
-                    <button className="cursor-pointer text-red-600 hover:text-red-900" onClick={() => HandleDeleteReminder(reminder.id)}>
+                    <button 
+                      className="cursor-pointer text-red-600 hover:text-red-900" 
+                      onClick={() => handleDeleteReminder(reminder.id)}
+                    >
                       Delete
                     </button>
                   </td>
@@ -190,12 +240,14 @@ export default function Reminders() {
         </div>
       )}
 
-      {/* Add Reminder Modal */}
+      {/* Add/Edit Reminder Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Add New Reminder</h2>
-            <form onSubmit={handleSubmit}>
+            <h2 className="text-2xl font-bold mb-4">
+              {editingId ? "Edit Reminder" : "Add New Reminder"}
+            </h2>
+            <div onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Title *
@@ -249,14 +301,15 @@ export default function Reminders() {
                   Cancel
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSubmit}
                   className="cursor-pointer px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
                   disabled={submitting}
                 >
-                  {submitting ? "Adding..." : "Add Reminder"}
+                  {submitting ? (editingId ? "Updating..." : "Adding...") : (editingId ? "Update Reminder" : "Add Reminder")}
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

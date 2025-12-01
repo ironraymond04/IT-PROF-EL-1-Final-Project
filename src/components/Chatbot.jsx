@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { MessageCircle, Send } from "lucide-react";
 import { sendGeminiMessage } from "../lib/gemini";
-import Events from "../pages/Events";
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
@@ -9,21 +8,41 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "Hello! I'm your Gemini Event Assistant. Ask me about upcoming events or student registration.",
+      content: "Hello! I'm your Gemini Event Assistant. What can I help you today?",
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
-    const newUserMsg = { role: "user", content: input };
+    const userMessage = input.trim();
+    const newUserMsg = { role: "user", content: userMessage };
+    
     setMessages((prev) => [...prev, newUserMsg]);
     setInput("");
+    setIsLoading(true);
 
-    // Pass events array to Gemini
-    const response = await sendGeminiMessage(messages, input, Events);
+    try {
+      // Pass conversation history and new message to Gemini
+      const response = await sendGeminiMessage(messages, userMessage);
+      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, I encountered an error. Please try again." }
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    setMessages((prev) => [...prev, { role: "assistant", content: response }]);
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
@@ -31,7 +50,8 @@ export default function Chatbot() {
       {/* Chat Icon */}
       <button
         onClick={() => setOpen(!open)}
-        className="cursor-pointer fixed bottom-6 right-6 bg-red-600 text-white p-3 rounded-full shadow-lg hover:bg-red-700"
+        className="cursor-pointer fixed bottom-6 right-6 bg-red-600 text-white p-3 rounded-full shadow-lg hover:bg-red-700 transition-colors"
+        aria-label="Toggle chat"
       >
         <MessageCircle className="w-6 h-6" />
       </button>
@@ -48,29 +68,42 @@ export default function Chatbot() {
                 key={i}
                 className={`p-2 rounded-xl ${
                   m.role === "assistant"
-                    ? "bg-red-100 text-gray-800 self-start"
-                    : "bg-gray-200 text-gray-900 self-end"
+                    ? "bg-red-100 text-gray-800"
+                    : "bg-gray-200 text-gray-900 ml-auto max-w-[85%]"
                 }`}
               >
                 {m.content}
               </div>
             ))}
+            {isLoading && (
+              <div className="bg-red-100 text-gray-800 p-2 rounded-xl">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-red-600 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-red-600 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                  <div className="w-2 h-2 bg-red-600 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                </div>
+              </div>
+            )}
           </div>
-<div className="p-2 flex border-t">
-  <input
-    type="text"
-    value={input}
-    onChange={(e) => setInput(e.target.value)}
-    placeholder="Ask something..."
-    className="flex-1 border border-gray-300 rounded-l-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
-  />
-  <button
-    onClick={handleSend}
-    className="cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 rounded-r-xl flex items-center justify-center"
-  >
-    <Send className="w-5 h-5" />
-  </button>
-</div>
+          <div className="p-2 flex border-t">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask something..."
+              disabled={isLoading}
+              className="flex-1 border border-gray-300 rounded-l-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
+            />
+            <button
+              onClick={handleSend}
+              disabled={isLoading || !input.trim()}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 rounded-r-xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Send message"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       )}
     </div>

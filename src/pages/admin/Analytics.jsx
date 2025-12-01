@@ -32,23 +32,23 @@ export default function Analytics() {
 
   if (loading) return <p>Loading analytics...</p>;
 
-  return (
+return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-4">Analytics</h1>
 
-      <table className="table-auto border-collapse border w-full">
+      <table className="table-auto border-collapse border border-black w-full bg-white">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border px-2 py-1">Event</th>
-            <th className="border px-2 py-1">Participants</th>
+          <tr className="bg-white">
+            <th className="border border-black px-2 py-1">Event</th>
+            <th className="border border-black px-2 py-1">Participants</th>
           </tr>
         </thead>
 
         <tbody>
           {events.map(e => (
-            <tr key={e.id}>
-              <td className="border px-2 py-1">{e.title}</td>
-              <td className="border px-2 py-1">
+            <tr key={e.id} className="bg-white">
+              <td className="border border-black px-2 py-1">{e.title}</td>
+              <td className="border border-black px-2 py-1">
                 {e.event_registrations?.length || 0}
               </td>
             </tr>
