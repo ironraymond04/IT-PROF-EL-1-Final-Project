@@ -100,3 +100,44 @@ Answer in a friendly, clear, and concise manner. Use bullet points or numbers if
     return "Error connecting to Gemini API.";
   }
 }
+
+/**
+ * Generates an AI description for an event
+ * @param {string} eventTitle - The title of the event
+ * @param {string} eventDate - The date of the event
+ * @param {string} eventLocation - The location of the event
+ * @returns {Promise<string>} Generated Description
+ */
+
+export async function generateAIDescription(eventTitle, eventDate, eventLocation) {
+  try {
+    const prompt = `
+    Generate a compelling and professional event description for the following event:
+    Event Title: ${eventTitle}
+    Date: ${eventDate}
+    Location: ${eventLocation}
+
+    Create a description that is:
+    - 2-3 sentences long
+    - Engaging and informative
+    - Appropriate for a school event
+    -Does not include quotation marks
+    Description:
+    `.trim();
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [prompt],
+      temperature: 0.8,
+      max_output_tokens: 200
+    });
+
+    let text = response?.candidates?.[0]?.content?.parts?.[0]?.text || response?.text || "";
+    text = text.replace(/["]+/g, "").trim();
+
+    return text || "Unable to generate description.";
+  } catch (err) {
+    console.error("Gemini AI Description Error:", err);
+    throw new Error("Failed to generate AI Description.");
+  }
+}

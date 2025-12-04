@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
+import { generateAIDescription } from "../../lib/gemini";
 
 export default function ManageEvents() {
   const [events, setEvents] = useState([]);
@@ -11,6 +12,7 @@ export default function ManageEvents() {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     fetchEvents();
@@ -27,6 +29,26 @@ export default function ManageEvents() {
     else setEvents(data);
     setLoading(false);
   }
+
+  // Generate AI description
+  const handleGenerateAI = async () => {
+    try {
+      if (!title || !date || !location) {
+        alert("Please fill in Title, Date, and Location first!");
+        return;
+      }
+
+      setIsGenerating(true);
+      const aiDescription = await generateAIDescription(title, date, location);
+      setDescription(aiDescription);
+      
+    } catch (error) {
+      console.error("Error generating description:", error);
+      alert("Failed to generate AI description. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   // Add a new event
   async function addEvent(e) {
@@ -81,7 +103,7 @@ export default function ManageEvents() {
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-11/12 max-w-md shadow-lg">
             <h2 className="text-xl font-bold mb-4">Add Event</h2>
             <form onSubmit={addEvent} className="space-y-3">
@@ -99,7 +121,15 @@ export default function ManageEvents() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="border px-2 py-1 w-full rounded"
-              />
+              /> 
+              <button
+                type="button"
+                onClick={handleGenerateAI}
+                disabled={isGenerating || !title || !date || !location}
+                className="cursor-pointer px-1.5 py-0.1 rounded border bg-green-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {isGenerating ? "Generating..." : "Generate with AI"}
+              </button>
               <input
                 type="date"
                 value={date}
