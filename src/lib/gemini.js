@@ -108,7 +108,6 @@ Answer in a friendly, clear, and concise manner. Use bullet points or numbers if
  * @param {string} eventLocation - The location of the event
  * @returns {Promise<string>} Generated Description
  */
-
 export async function generateAIDescription(eventTitle, eventDate, eventLocation) {
   try {
     const prompt = `
@@ -121,7 +120,7 @@ export async function generateAIDescription(eventTitle, eventDate, eventLocation
     - 2-3 sentences long
     - Engaging and informative
     - Appropriate for a school event
-    -Does not include quotation marks
+    - Does not include quotation marks
     Description:
     `.trim();
 
@@ -139,5 +138,53 @@ export async function generateAIDescription(eventTitle, eventDate, eventLocation
   } catch (err) {
     console.error("Gemini AI Description Error:", err);
     throw new Error("Failed to generate AI Description.");
+  }
+}
+
+/**
+ * Generates an AI note for a reminder
+ * @param {string} reminderTitle - The title of the reminder
+ * @param {string} remindAt - The date/time when to be reminded
+ * @returns {Promise<string>} Generated Note
+ */
+export async function generateReminderNote(reminderTitle, remindAt) {
+  try {
+    const reminderDate = new Date(remindAt).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    const prompt = `
+    Generate a helpful and contextual note for the following reminder:
+    Reminder Title: ${reminderTitle}
+    Scheduled for: ${reminderDate}
+
+    Create a note that is:
+    - 1-2 sentences long
+    - Helpful and actionable
+    - Provides context or preparation tips
+    - Appropriate and professional
+    - Does not include quotation marks
+    Note:
+    `.trim();
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [prompt],
+      temperature: 0.7,
+      max_output_tokens: 150
+    });
+
+    let text = response?.candidates?.[0]?.content?.parts?.[0]?.text || response?.text || "";
+    text = text.replace(/["]+/g, "").trim();
+
+    return text || "Unable to generate note.";
+  } catch (err) {
+    console.error("Gemini AI Reminder Note Error:", err);
+    throw new Error("Failed to generate AI note.");
   }
 }

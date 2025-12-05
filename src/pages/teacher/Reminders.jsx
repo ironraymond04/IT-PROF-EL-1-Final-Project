@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
+import { generateReminderNote } from "../../lib/gemini";
 
 export default function Reminders() {
   const [reminders, setReminders] = useState([]);
@@ -152,6 +153,21 @@ export default function Reminders() {
     );
   }
 
+  async function handleGenerateNote() {
+  if (!formData.title || !formData.remind_at) {
+    alert("Please enter a title and date first");
+    return;
+  }
+  
+  setSubmitting(true);
+  try {
+    const note = await generateReminderNote(formData.title, formData.remind_at);
+    setFormData(prev => ({ ...prev, note }));
+  } catch (err) {
+    alert("Failed to generate note");
+  }
+  setSubmitting(false);
+}
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
@@ -242,7 +258,7 @@ export default function Reminders() {
 
       {/* Add/Edit Reminder Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-2xl font-bold mb-4">
               {editingId ? "Edit Reminder" : "Add New Reminder"}
@@ -275,6 +291,12 @@ export default function Reminders() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Add additional details (optional)"
                 />
+                <button 
+                type="button"
+                onClick={handleGenerateNote}
+                className="cursor-pointer px-1.5 py-0.1 rounded border bg-green-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  Generate with AI</button>
               </div>
 
               <div className="mb-6">
