@@ -51,6 +51,9 @@ export default function Login() {
 
         <input
           type="password"
+          onKeyDown={(e) => {
+          if (e.key === "Enter") handleLogin();
+          }}
           className="w-full border px-3 py-2 rounded mb-4"
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
